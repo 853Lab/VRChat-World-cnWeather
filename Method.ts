@@ -21,3 +21,17 @@ export const generateToken = async (YourPrivateKey: string, YourKeyID: string, Y
 
   return token
 }
+
+export const getUrl = (path: string, free: boolean = true) => {
+  return `${getAPIURL(free)}${path}`
+}
+
+export const get7DaysWeather = async (location: string, token: string, free: boolean = true) => {
+  const res = await fetch(getUrl(`v7/weather/7d?${new URLSearchParams({ location }).toString()}`, free), {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  })
+  return await res.text()
+}
