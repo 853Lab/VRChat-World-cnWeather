@@ -1,5 +1,7 @@
 import { SignJWT, importPKCS8 } from 'https://deno.land/x/jose@v5.9.6/index.ts'
 
+export const getAPIURL = (free: boolean) => free ? "https://devapi.qweather.com/" : "https://api.qweather.com/"
+
 export const generateToken = async (YourPrivateKey: string, YourKeyID: string, YourProjectID: string) => {
   const privateKey = await importPKCS8(YourPrivateKey, 'EdDSA')
   const customHeader = {
