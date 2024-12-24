@@ -1,8 +1,17 @@
 import { SignJWT, importPKCS8 } from 'https://deno.land/x/jose@v5.9.6/index.ts'
+import { parseArgs } from "jsr:@std/cli/parse-args"
 
-const YourPrivateKey = 'YOUR_PRIVATE_KEY'
-const YourKeyID = 'YOUR_KEY_ID'
-const YourProjectID = 'YOUR_PROJECT_ID'
+const flags = parseArgs(Deno.args, {
+  string: [
+    "private",
+    "key",
+    "project"
+  ],
+})
+if (!flags.private || !flags.key || !flags.project) {
+  console.error("Missing required flags")
+  Deno.exit(1)
+}
 
 const generateToken = async (YourPrivateKey: string, YourKeyID: string, YourProjectID: string) => {
   const privateKey = await importPKCS8(YourPrivateKey, 'EdDSA')
