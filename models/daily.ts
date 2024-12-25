@@ -1,3 +1,6 @@
+/**
+ * 预报天气
+ */
 export interface Daily {
   /**
    * 预报日期

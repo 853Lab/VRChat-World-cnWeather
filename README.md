@@ -5,6 +5,7 @@
 ## 数据来源
 
 - [和风天气](https://www.qweather.com/)
+- [AccuWeather](https://www.accuweather.com/)
 
 ## License restrictions 许可限制
 

@@ -1,22 +1,6 @@
 import { Daily } from "./daily.ts"
+import { Hourly } from "./hourly.ts"
 
-export interface ResultBody extends Weather {
-  /**
-   * 状态码
-   */
-  code?: string
-  refer: {
-    /**
-     * 原始数据来源，或数据源说明，可能为空
-     */
-    sources?: string[]
-    /**
-     * 数据许可或版权声明，可能为空
-     */
-    license?: string[]
-  }
-  error?: object
-}
 export interface Weather {
   /**
    * 当前API的最近更新时间
@@ -30,18 +14,16 @@ export interface Weather {
    * 预报天气
    */
   daily: Daily[]
-}
-export interface SaveBody {
   /**
-   * 各地区天气数据
+   * 逐小时天气
    */
-  weathers: Record<string, Weather>
+  hourly: Hourly[]
   /**
    * 数据来源
    */
-  source: string
+  source: string[]
   /**
    * 数据许可或版权声明
    */
-  license: string
+  license: string[]
 }
