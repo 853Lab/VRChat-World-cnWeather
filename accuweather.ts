@@ -14,7 +14,8 @@ export const getRequest = async (urlPath: string, client?: Deno.HttpClient) => {
     "sec-ch-ua": "\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": "\"Windows\"",
-    cookie: 'awx_user=tp:C|lang:zh-cn',
+    // cookie: 'awx_user=tp:C|lang:zh-cn',
+    cookie: 'awx_user=tp:C',
     Referer: "https://www.accuweather.com/",
   }
   let res: Response
@@ -119,10 +120,10 @@ export const getDailyWeatherHtml = (htmltext: string) => {
         dailys[0].sunset = convertTime12to24(data)
         break
       case 2:
-        dailys[1].moonrise = convertTime12to24(data)
+        dailys[0].moonrise = convertTime12to24(data)
         break
       case 3:
-        dailys[1].moonset = convertTime12to24(data)
+        dailys[0].moonset = convertTime12to24(data)
         break
     }
   })
