@@ -3627,4 +3627,5 @@ export const AccuLocation: Record<string, string> = {
   "Lianjiang": "/zh/tw/lienchiang-county/3369309/weather-forecast/3369309",
   "Yunlin County": "/zh/tw/yunlin-county/3369302/weather-forecast/3369302",
   "Penghu County": "/zh/tw/penghu-county/3369307/weather-forecast/3369307",
+  "Magong": "/zh/tw/magong-city/314361/weather-forecast/314361",
 }

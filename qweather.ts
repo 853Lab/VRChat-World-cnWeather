@@ -1,7 +1,7 @@
 import { SignJWT, importPKCS8 } from "https://deno.land/x/jose@v5.9.6/index.ts"
 import { Weather } from "./models/weather.ts"
 import { QLocation } from "./location.ts"
-import { ResultWeatherDaily, ResultWeatherHourly } from "./models/qweather.ts"
+import { ResultWeatherDaily, ResultWeatherHourly, ResultWeatherNow } from "./models/qweather.ts"
 
 export const getAPIURL = (free: boolean) => free ? "https://devapi.qweather.com" : "https://api.qweather.com"
 
@@ -98,6 +98,28 @@ export const getHourlyWeather = async (location: string, token: string, free: bo
   }
   return weather
 }
+export const getNowWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient) => {
+  const result = await getRequest(`/v7/weather/now?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client)
+  if (!result) {
+    console.error("Failed to fetch weather data")
+    return undefined
+  }
+  const data: ResultWeatherNow = JSON.parse(result)
+  if (data.code != "200" || data.error) {
+    console.error(data)
+    return undefined
+  }
+  const weather: Weather = {
+    updateTime: data.updateTime,
+    fxLink: data.fxLink,
+    now: data.now,
+    daily: [],
+    hourly: [],
+    source: data.refer.sources || [],
+    license: data.refer.license || [],
+  }
+  return weather
+}
 
 export const getAllDailyWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient) => {
   const saveData: Record<string, Weather> = {}
@@ -119,6 +141,18 @@ export const getAllHourlyWeather = async (locations: string[], token: string, fr
     const hourlysWeather = await getHourlyWeather(location, token, free, client)
     if (!hourlysWeather) continue
     saveData[QLocation[location] || location] = hourlysWeather
+  }
+  return saveData
+}
+
+export const getAllNowWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient) => {
+  const saveData: Record<string, Weather> = {}
+
+  for (const location of locations) {
+    if (!location) continue
+    const nowWeather = await getNowWeather(location, token, free, client)
+    if (!nowWeather) continue
+    saveData[QLocation[location] || location] = nowWeather
   }
   return saveData
 }

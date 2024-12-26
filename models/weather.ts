@@ -1,5 +1,6 @@
 import { Daily } from "./daily.ts"
 import { Hourly } from "./hourly.ts"
+import { Now } from "./now.ts"
 
 export interface Weather {
   /**
@@ -10,6 +11,10 @@ export interface Weather {
    * 当前数据的响应式页面
    */
   fxLink: string
+  /**
+   * 实时天气
+   */
+  now?: Now
   /**
    * 预报天气
    */

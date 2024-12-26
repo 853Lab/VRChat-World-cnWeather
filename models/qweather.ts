@@ -1,5 +1,6 @@
 import { Daily } from "./daily.ts"
 import { Hourly } from "./hourly.ts"
+import { Now } from "./now.ts";
 
 export interface ResultBody {
   /**
@@ -40,4 +41,10 @@ export interface ResultWeatherHourly extends ResultBody {
    * 逐小时天气
    */
   hourly: Hourly[]
+}
+export interface ResultWeatherNow extends ResultBody {
+  /**
+   * 实时天气
+   */
+  now: Now
 }

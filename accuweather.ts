@@ -3,6 +3,7 @@ import * as cheerio from "npm:cheerio"
 import { Daily } from "./models/daily.ts"
 import { Hourly } from "./models/hourly.ts"
 import { Weather } from "./models/weather.ts"
+import { Now } from "./models/now.ts"
 
 export const getURL = "https://www.accuweather.com"
 
@@ -113,7 +114,7 @@ export const getDailyWeatherHtml = (htmltext: string) => {
   let year = datenow.getFullYear()
   document(".daily-list-body > .daily-list-item").map((_i, el) => {
     const element = document(el)
-    const [month,day] = element.find(".date > p:nth-child(2)").text().trim().split("/")
+    const [month, day] = element.find(".date > p:nth-child(2)").text().trim().split("/")
     // 如果 date 是 1/ 开头， datenow.getMonth() 是 12，说明 date 是明年的
     if (year === datenow.getFullYear() && month === "1" && datenow.getMonth() === 11) {
       year++
@@ -225,7 +226,7 @@ export const FormatWithTimezone = (date: Date, timezone: string): string => {
 }
 
 export const getHourlyWeatherHtml = (htmltext: string) => {
-  const hourlys: Hourly[] = []
+  const hourly: Hourly[] = []
   const document = cheerio.load(htmltext)
   document(".hourly-list__list > .hourly-list__list__item").map((_i, el) => {
     const element = document(el)
@@ -233,7 +234,7 @@ export const getHourlyWeatherHtml = (htmltext: string) => {
     const temp = element.find(".hourly-list__list__item-temp").text().trim().replaceAll("°", "")
     const pop = element.find(".hourly-list__list__item-precip > span").text().trim().replaceAll("%", "")
     const icon = element.find(".hourly-list__list__item-icon").attr("src")?.split("/").pop()?.split(".")[0]
-    hourlys.push({
+    hourly.push({
       fxTime,
       temp,
       icon: icon || "",
@@ -251,13 +252,28 @@ export const getHourlyWeatherHtml = (htmltext: string) => {
   const todayElement = document(".cur-con-weather-card__body > .cur-con-weather-card__panel > .forecast-container > .forecast-container")
   const icon = todayElement.find(".weather-icon").attr("data-src")?.split("/").pop()?.split(".")[0]
   const temp = todayElement.find(".temp-container > .temp").text().trim().split("°")[0]
-  let firstHour = parseInt(hourlys[0].fxTime.split(":")[0], 10) - 1
+  const realFeel = todayElement.find(".temp-container > .real-feel").text().replaceAll("RealFeel®", "").trim().split("°")[0]
+  let firstHour = parseInt(hourly[0].fxTime.split(":")[0], 10) - 1
   if (firstHour < 0) {
     firstHour = 23
   }
-  hourlys.unshift({
-    fxTime: `${firstHour.toString().padStart(2, "0")}:00`,
+  // hourlys.unshift({
+  //   fxTime: `${firstHour.toString().padStart(2, "0")}:00`,
+  //   temp,
+  //   icon: icon || "",
+  //   text: WeatherIconToText[icon || ""] || "",
+  //   wind360: "",
+  //   windDir: "",
+  //   windScale: "",
+  //   windSpeed: "",
+  //   humidity: "",
+  //   precip: "",
+  //   pressure: "",
+  // })
+  const now: Now = {
+    obsTime: FormatWithTimezone(new Date(), "+08:00"),
     temp,
+    feelsLike: realFeel,
     icon: icon || "",
     text: WeatherIconToText[icon || ""] || "",
     wind360: "",
@@ -267,8 +283,13 @@ export const getHourlyWeatherHtml = (htmltext: string) => {
     humidity: "",
     precip: "",
     pressure: "",
-  })
-  return hourlys
+    vis: "",
+    dew: ""
+  }
+  return {
+    hourly,
+    now
+  }
 }
 
 export const getWeather = async (location: string, client?: Deno.HttpClient) => {
@@ -282,12 +303,13 @@ export const getWeather = async (location: string, client?: Deno.HttpClient) => 
     return null
   }
   const daily = getDailyWeatherHtml(htmltext)
-  const hourly = getHourlyWeatherHtml(htmltext)
+  const { hourly, now } = getHourlyWeatherHtml(htmltext)
   const updateTime = FormatWithTimezone(new Date(), "+08:00")
   const weather: Weather = {
     // 2024-12-24T22:13+08:00
     updateTime,
     fxLink: `${getURL}${urlPath}`,
+    now,
     daily,
     hourly,
     source: ["AccuWeather"],
