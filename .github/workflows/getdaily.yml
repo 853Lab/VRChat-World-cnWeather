@@ -1,0 +1,71 @@
+# 每天北京时间的 00:05 和 12:05 执行一次
+name: GetDaily
+
+on:
+  schedule:
+    - cron: '5 16,4 * * *'
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: What was your mission in Shanghai?!
+        uses: MathRobin/timezone-action@v1.1
+        with:
+          timezoneLinux: 'Asia/Shanghai'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read updatetime.txt before running Deno
+        id: read_before_updatetime
+        run: echo "date=$(cat updatetime.txt)" >> $GITHUB_OUTPUT
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: vx.x.x
+
+      - name: Run Deno Cache
+        run: deno cache create.ts
+
+      - name: Run Deno script
+        run: deno run --allow-read --allow-write --allow-net --allow-env create.ts --mode=qwdaily,qwnow,qwhourly --export=${{ secrets.EXPORT }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }}
+
+      - name: Read updatetime.txt after running Deno
+        id: read_after_updatetime
+        run: echo "date=$(cat updatetime.txt)" >> $GITHUB_OUTPUT
+
+      - name: Commit changes updatetime
+        if: steps.read_before_updatetime.outputs.date != steps.read_after_updatetime.outputs.date
+        run: |
+          git config --local user.email "Sonic853@qq.com" && git config --local user.name "853 Action"
+          git add updatetime.txt
+          git commit -m "Update updatetime.txt"
+          git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: './pages'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
