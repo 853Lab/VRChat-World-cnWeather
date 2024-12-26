@@ -200,7 +200,7 @@ if (!await fs.exists(folder)) {
 if (await fs.exists(filepath)) {
   await Deno.remove(filepath)
 }
-await Deno.writeTextFile(filepath, JSON.stringify(saveData, null, 2))
+await Deno.writeTextFile(filepath, JSON.stringify(saveData))
 
 // 保活
 if (await fs.exists("updatetime.txt")) {
