@@ -93,6 +93,10 @@ if (flags.qweather && qLocations.length > 0) {
     const saveData1 = await qweather.getAllDailyWeather(qLocations, token, flags.free)
     needWait = true
     for (const location in saveData1) {
+      if (!saveData[location]) {
+        saveData[location] = saveData1[location]
+        continue
+      }
       saveData[location].updateTime = saveData1[location].updateTime
       saveData[location].fxLink = saveData1[location].fxLink
       saveData[location].daily = saveData1[location].daily
@@ -108,6 +112,10 @@ if (flags.qweather && qLocations.length > 0) {
     const saveData1 = await qweather.getAllNowWeather(qLocations, token, flags.free)
     needWait = true
     for (const location in saveData1) {
+      if (!saveData[location]) {
+        saveData[location] = saveData1[location]
+        continue
+      }
       saveData[location].updateTime = saveData1[location].updateTime
       saveData[location].fxLink = saveData1[location].fxLink
       saveData[location].now = saveData1[location].now
@@ -129,6 +137,10 @@ if (flags.qweather && qLocations.length > 0) {
     needWait = true
     // 合并数据
     for (const location in saveData1) {
+      if (!saveData[location]) {
+        saveData[location] = saveData1[location]
+        continue
+      }
       saveData[location].updateTime = saveData1[location].updateTime
       saveData[location].fxLink = saveData1[location].fxLink
       saveData[location].hourly = saveData1[location].hourly
@@ -144,8 +156,7 @@ if (flags.accuweather && AccuLocations.length > 0) {
       if (!location) continue
       const daysWeather = await accuweather.getWeather(location, client)
       if (!daysWeather) continue
-      const data = saveData[location]
-      if (!data) {
+      if (!saveData[location]) {
         saveData[location] = daysWeather
         continue
       }
@@ -156,6 +167,10 @@ if (flags.accuweather && AccuLocations.length > 0) {
       }
       if (saveData[location].hourly.length === 0) {
         saveData[location].hourly = daysWeather.hourly
+        hevePushData = true
+      }
+      if (!saveData[location].now) {
+        saveData[location].now = daysWeather.now
         hevePushData = true
       }
       if (hevePushData) {
