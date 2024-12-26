@@ -91,6 +91,10 @@ export interface Daily {
    */
   humidity: string
   /**
+   * 逐小时预报降水概率，百分比数值，可能为空
+   */
+  pop?: string
+  /**
    * 预报当天总降水量，默认单位：毫米
    */
   precip: string

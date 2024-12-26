@@ -6,6 +6,49 @@ import { Weather } from "./models/weather.ts"
 
 export const getURL = "https://www.accuweather.com"
 
+export const WeatherIconToText: Record<string, string> = {
+  "1": "Sunny",
+  "2": "Mostly Sunny",
+  "3": "Partly Sunny",
+  "4": "Intermittent Clouds",
+  "5": "Hazy Sunshine",
+  "6": "Mostly Cloudy",
+  "7": "Cloudy",
+  "8": "Dreary (Overcast)",
+  "11": "Fog",
+  "12": "Showers",
+  "13": "Mostly Cloudy w/ Showers",
+  "14": "Partly Sunny w/ Showers",
+  "15": "T-Storms",
+  "16": "Mostly Cloudy w/ T-Storms",
+  "17": "Partly Sunny w/ T-Storms",
+  "18": "Rain",
+  "19": "Flurries",
+  "20": "Mostly Cloudy w/ Flurries",
+  "21": "Partly Sunny w/ Flurries",
+  "22": "Snow",
+  "23": "Mostly Cloudy w/ Snow",
+  "24": "Ice",
+  "25": "Sleet",
+  "26": "Freezing Rain",
+  "29": "Rain and Snow",
+  "30": "Hot",
+  "31": "Cold",
+  "32": "Windy",
+  "33": "Clear",
+  "34": "Mostly Clear",
+  "35": "Partly Cloudy",
+  "36": "Intermittent Clouds",
+  "37": "Hazy Moonlight",
+  "38": "Mostly Cloudy",
+  "39": "Partly Cloudy w/ Showers",
+  "40": "Mostly Cloudy w/ Showers",
+  "41": "Partly Cloudy w/ T-Storms",
+  "42": "Mostly Cloudy w/ T-Storms",
+  "43": "Mostly Cloudy w/ Flurries",
+  "44": "Mostly Cloudy w/ Snow",
+}
+
 export const getRequest = async (urlPath: string, client?: Deno.HttpClient) => {
   const url = `${getURL}${urlPath}`
   const headers = {
@@ -80,9 +123,9 @@ export const getDailyWeatherHtml = (htmltext: string) => {
     const tempMin = element.find(".temp-phrase-wrapper > .temp > .temp-lo").text().trim().replaceAll("°", "")
     const iconDay = element.find(".icon").attr("src")?.split("/").pop()?.split(".")[0]
     const iconNight = element.find(".night-icon").attr("src")?.split("/").pop()?.split(".")[0]
-    const textDay = element.find(".phrase > .no-wrap").text().trim()
-    const textNight = element.find(".phrase > .night > .no-wrap").text().trim()
-    const humidity = element.find(".precip").text().trim().replace("%", "")
+    // const textDay = element.find(".phrase > .no-wrap").text().trim()
+    // const textNight = element.find(".phrase > .night > .no-wrap").text().trim()
+    const pop = element.find(".precip").text().trim().replace("%", "")
     dailys.push({
       fxDate,
       sunrise: "",
@@ -92,9 +135,9 @@ export const getDailyWeatherHtml = (htmltext: string) => {
       tempMax,
       tempMin,
       iconDay: iconDay || "",
-      textDay,
+      textDay: WeatherIconToText[iconDay || ""] || "",
       iconNight: iconNight || "",
-      textNight,
+      textNight: WeatherIconToText[iconNight || ""] || "",
       wind360Day: "",
       windDirDay: "",
       windScaleDay: "",
@@ -103,7 +146,8 @@ export const getDailyWeatherHtml = (htmltext: string) => {
       windDirNight: "",
       windScaleNight: "",
       windSpeedNight: "",
-      humidity,
+      humidity: "",
+      pop,
       precip: "",
       pressure: "",
       vis: "",
@@ -187,21 +231,42 @@ export const getHourlyWeatherHtml = (htmltext: string) => {
     const element = document(el)
     const fxTime = convertTimeTextto24(element.find(".hourly-list__list__item-time").text().trim())
     const temp = element.find(".hourly-list__list__item-temp").text().trim().replaceAll("°", "")
-    const humidity = element.find(".hourly-list__list__item-precip > .rain.drop").text().trim().replaceAll("°", "")
+    const pop = element.find(".hourly-list__list__item-precip > span").text().trim().replaceAll("%", "")
     const icon = element.find(".hourly-list__list__item-icon").attr("src")?.split("/").pop()?.split(".")[0]
     hourlys.push({
       fxTime,
       temp,
       icon: icon || "",
-      text: "",
+      text: WeatherIconToText[icon || ""] || "",
       wind360: "",
       windDir: "",
       windScale: "",
       windSpeed: "",
-      humidity,
+      humidity: "",
       precip: "",
-      pressure: ""
+      pressure: "",
+      pop,
     })
+  })
+  const todayElement = document(".cur-con-weather-card__body > .cur-con-weather-card__panel > .forecast-container > .forecast-container")
+  const icon = todayElement.find(".weather-icon").attr("data-src")?.split("/").pop()?.split(".")[0]
+  const temp = todayElement.find(".temp-container > .temp").text().trim().split("°")[0]
+  let firstHour = parseInt(hourlys[0].fxTime.split(":")[0], 10) - 1
+  if (firstHour < 0) {
+    firstHour = 23
+  }
+  hourlys.unshift({
+    fxTime: `${firstHour.toString().padStart(2, "0")}:00`,
+    temp,
+    icon: icon || "",
+    text: WeatherIconToText[icon || ""] || "",
+    wind360: "",
+    windDir: "",
+    windScale: "",
+    windSpeed: "",
+    humidity: "",
+    precip: "",
+    pressure: "",
   })
   return hourlys
 }
