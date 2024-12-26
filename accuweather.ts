@@ -213,16 +213,18 @@ export const FormatWithTimezone = (date: Date, timezone: string): string => {
   const parts = new Intl.DateTimeFormat('en-GB', options).formatToParts(date)
 
   // 拼接成 ISO8601 格式
-  const [year, month, day, hour, minute, second] = [
+  // const [year, month, day, hour, minute, second] = [
+  const [year, month, day, hour, minute] = [
     parts.find(p => p.type === 'year')?.value,
     parts.find(p => p.type === 'month')?.value,
     parts.find(p => p.type === 'day')?.value,
     parts.find(p => p.type === 'hour')?.value,
     parts.find(p => p.type === 'minute')?.value,
-    parts.find(p => p.type === 'second')?.value,
+    // parts.find(p => p.type === 'second')?.value,
   ]
 
-  return `${year}-${month}-${day}T${hour}:${minute}:${second}${timezone}`
+  // return `${year}-${month}-${day}T${hour}:${minute}:${second}${timezone}`
+  return `${year}-${month}-${day}T${hour}:${minute}${timezone}`
 }
 
 export const getHourlyWeatherHtml = (htmltext: string) => {
