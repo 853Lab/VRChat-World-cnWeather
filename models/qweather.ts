@@ -18,7 +18,7 @@ export interface ResultBody {
   /**
    * 来源和版权声明
    */
-  refer: {
+  refer?: {
     /**
      * 原始数据来源，或数据源说明，可能为空
      */

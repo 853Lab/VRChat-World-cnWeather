@@ -72,8 +72,8 @@ export const getDailyWeather = async (location: string, token: string, free: boo
     fxLink: data.fxLink,
     daily: data.daily,
     hourly: [],
-    source: data.refer.sources || [],
-    license: data.refer.license || [],
+    source: data.refer?.sources || [],
+    license: data.refer?.license || [],
   }
   return weather
 }
@@ -93,8 +93,8 @@ export const getHourlyWeather = async (location: string, token: string, free: bo
     fxLink: data.fxLink,
     daily: [],
     hourly: data.hourly,
-    source: data.refer.sources || [],
-    license: data.refer.license || [],
+    source: data.refer?.sources || [],
+    license: data.refer?.license || [],
   }
   return weather
 }
@@ -115,8 +115,8 @@ export const getNowWeather = async (location: string, token: string, free: boole
     now: data.now,
     daily: [],
     hourly: [],
-    source: data.refer.sources || [],
-    license: data.refer.license || [],
+    source: data.refer?.sources || [],
+    license: data.refer?.license || [],
   }
   return weather
 }
