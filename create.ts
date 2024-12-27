@@ -166,26 +166,27 @@ if (flags.accuweather && AccuLocations.length > 0) {
       if (!location) continue
       const daysWeather = await accuweather.getWeather(location, client)
       if (!daysWeather) continue
-      if (!saveData[location]) {
-        saveData[location] = daysWeather
+      const location_ = QLocation[location] || location
+      if (!saveData[QLocation[location_]]) {
+        saveData[location_] = daysWeather
         continue
       }
       let hevePushData = false
-      if (saveData[location].daily.length === 0) {
-        saveData[location].daily = daysWeather.daily
+      if (saveData[location_].daily.length === 0) {
+        saveData[location_].daily = daysWeather.daily
         hevePushData = true
       }
-      if (saveData[location].hourly.length === 0) {
-        saveData[location].hourly = daysWeather.hourly
+      if (saveData[location_].hourly.length === 0) {
+        saveData[location_].hourly = daysWeather.hourly
         hevePushData = true
       }
-      if (!saveData[location].now) {
-        saveData[location].now = daysWeather.now
+      if (!saveData[location_].now) {
+        saveData[location_].now = daysWeather.now
         hevePushData = true
       }
       if (hevePushData) {
-        saveData[location].source.push(...daysWeather.source.filter(s => !saveData[location].source.includes(s)))
-        saveData[location].license.push(...daysWeather.license.filter(s => !saveData[location].license.includes(s)))
+        saveData[location_].source.push(...daysWeather.source.filter(s => !saveData[location_].source.includes(s)))
+        saveData[location_].license.push(...daysWeather.license.filter(s => !saveData[location_].license.includes(s)))
       }
     }
   }
@@ -201,6 +202,28 @@ if (await fs.exists(filepath)) {
   await Deno.remove(filepath)
 }
 await Deno.writeTextFile(filepath, JSON.stringify(saveData))
+
+const newSaveData: Record<string, Record<string, Weather>> = {}
+for (const locationWithAdm1 in saveData) {
+  let [adm1Name, location]: [string, string] = ["", ""]
+  if (!locationWithAdm1.includes("|")) {
+    adm1Name = "olddata"
+    location = locationWithAdm1
+  }
+  else {
+    [adm1Name, location] = locationWithAdm1.split("|")
+  }
+  if (!newSaveData[adm1Name]) {
+    newSaveData[adm1Name] = {}
+  }
+  newSaveData[adm1Name][location] = saveData[locationWithAdm1]
+}
+
+const filepath2 = path.join(folder, `${flags.export}2.json`)
+if (await fs.exists(filepath2)) {
+  await Deno.remove(filepath2)
+}
+await Deno.writeTextFile(filepath2, JSON.stringify(newSaveData))
 
 // 保活
 if (await fs.exists("updatetime.txt")) {

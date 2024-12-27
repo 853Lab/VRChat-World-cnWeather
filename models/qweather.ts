@@ -1,6 +1,6 @@
 import { Daily } from "./daily.ts"
 import { Hourly } from "./hourly.ts"
-import { Now } from "./now.ts";
+import { Now } from "./now.ts"
 
 export interface ResultBody {
   /**
