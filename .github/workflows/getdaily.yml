@@ -76,6 +76,7 @@ jobs:
           username: '${{ secrets.SERVER_USER }}'
           server: '${{ secrets.SERVER_IP }}'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SERVER_PASS }}
           local_path: './pages/*'
           remote_path: '${{ secrets.SERVER_REMOTE_PATH }}/${{ github.event.repository.name }}'
           sftpArgs: '-o ConnectTimeout=5'
