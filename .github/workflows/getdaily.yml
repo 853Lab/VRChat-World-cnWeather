@@ -3,7 +3,7 @@ name: GetDaily
 
 on:
   schedule:
-    - cron: '5 16,4 * * *'
+    - cron: '1 16,4 * * *'
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
