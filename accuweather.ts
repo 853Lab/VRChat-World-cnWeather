@@ -213,18 +213,47 @@ export const FormatWithTimezone = (date: Date, timezone: string): string => {
   const parts = new Intl.DateTimeFormat('en-GB', options).formatToParts(date)
 
   // 拼接成 ISO8601 格式
-  // const [year, month, day, hour, minute, second] = [
-  const [year, month, day, hour, minute] = [
+  const [year, month, day, hour, minute, second] = [
+  // const [year, month, day, hour, minute] = [
     parts.find(p => p.type === 'year')?.value,
     parts.find(p => p.type === 'month')?.value,
     parts.find(p => p.type === 'day')?.value,
     parts.find(p => p.type === 'hour')?.value,
     parts.find(p => p.type === 'minute')?.value,
-    // parts.find(p => p.type === 'second')?.value,
+    parts.find(p => p.type === 'second')?.value,
   ]
 
-  // return `${year}-${month}-${day}T${hour}:${minute}:${second}${timezone}`
-  return `${year}-${month}-${day}T${hour}:${minute}${timezone}`
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}${timezone}`
+  // return `${year}-${month}-${day}T${hour}:${minute}${timezone}`
+}
+
+export const FormatWithTimezoneLite = (date: Date, timezone: string): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: timezone, // 使用输入的时区
+    hourCycle: 'h23', // 保持 24 小时制
+  }
+  const parts = new Intl.DateTimeFormat('en-GB', options).formatToParts(date)
+
+  // 拼接成 ISO8601 格式
+  // const [year, month, day, hour, minute, second] = [
+    const [year, month, day] = [
+  // const [year, month, day, hour, minute] = [
+    parts.find(p => p.type === 'year')?.value,
+    parts.find(p => p.type === 'month')?.value,
+    parts.find(p => p.type === 'day')?.value,
+    parts.find(p => p.type === 'hour')?.value,
+    parts.find(p => p.type === 'minute')?.value,
+    parts.find(p => p.type === 'second')?.value,
+  ]
+
+  return `${year}-${month}-${day}`
+  // return `${year}-${month}-${day}T${hour}:${minute}${timezone}`
 }
 
 export const getHourlyWeatherHtml = (htmltext: string) => {

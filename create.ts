@@ -6,7 +6,7 @@ import * as qweather from "./qweather.ts"
 import * as accuweather from "./accuweather.ts"
 import { QLocation } from "./location.ts"
 import { Weather } from "./models/weather.ts"
-import { FormatWithTimezone } from "./accuweather.ts"
+import { FormatWithTimezoneLite } from "./accuweather.ts"
 
 let client: Deno.HttpClient | undefined
 
@@ -229,4 +229,4 @@ await Deno.writeTextFile(filepath2, JSON.stringify(newSaveData))
 if (await fs.exists("updatetime.txt")) {
   await Deno.remove("updatetime.txt")
 }
-await Deno.writeTextFile("updatetime.txt", FormatWithTimezone(new Date(), "+08:00"))
+await Deno.writeTextFile("updatetime.txt", FormatWithTimezoneLite(new Date(), "+08:00"))
