@@ -226,7 +226,12 @@ if (await fs.exists(filepath2)) {
 await Deno.writeTextFile(filepath2, JSON.stringify(newSaveData))
 
 // 保活
-if (await fs.exists("updatetime.txt")) {
-  await Deno.remove("updatetime.txt")
+const timeNow = new Date()
+const thisDay = timeNow.getDate()
+
+if (thisDay === 1 || thisDay === 15) {
+  if (await fs.exists("updatetime.txt")) {
+    await Deno.remove("updatetime.txt")
+  }
+  await Deno.writeTextFile("updatetime.txt", FormatWithTimezoneLite(thisDay, "+08:00"))
 }
-await Deno.writeTextFile("updatetime.txt", FormatWithTimezoneLite(new Date(), "+08:00"))
