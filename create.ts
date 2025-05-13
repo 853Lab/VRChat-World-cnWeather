@@ -233,5 +233,5 @@ if (thisDay === 1 || thisDay === 15) {
   if (await fs.exists("updatetime.txt")) {
     await Deno.remove("updatetime.txt")
   }
-  await Deno.writeTextFile("updatetime.txt", FormatWithTimezoneLite(thisDay, "+08:00"))
+  await Deno.writeTextFile("updatetime.txt", FormatWithTimezoneLite(timeNow, "+08:00"))
 }
