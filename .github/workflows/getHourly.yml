@@ -32,6 +32,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Checkout VRChat-World-Weather-Creator repository
+        uses: actions/checkout@v4
+        with:
+          repository: Sonic853/VRChat-World-Weather-Creator
+          path: VWWC
+
       - name: Read updatetime.txt before running Deno
         id: read_before_updatetime
         run: echo "date=$(cat updatetime.txt)" >> $GITHUB_OUTPUT
@@ -42,10 +48,10 @@ jobs:
           deno-version: vx.x.x
 
       - name: Run Deno Cache
-        run: deno cache create.ts
+        run: deno cache VWWC/create.ts
 
       - name: Run Deno script
-        run: deno run --allow-read --allow-write --allow-net --allow-env create.ts --mode=qwnow,qwhourly --export=${{ secrets.EXPORT }} --saveurl=${{ secrets.SAVEURL }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }}
+        run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwnow,qwhourly --export=${{ secrets.EXPORT }} --saveurl=${{ secrets.SAVEURL }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }}
 
       - name: Read updatetime.txt after running Deno
         id: read_after_updatetime
