@@ -51,7 +51,7 @@ jobs:
         run: deno cache VWWC/create.ts
 
       - name: Run Deno script
-        run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwdaily,qwnow,qwhourly --export=${{ secrets.EXPORT }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }}
+        run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwdaily,qwnow,qwhourly --export=${{ secrets.EXPORT }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }} --apihost=${{ secrets.APIHOST }}
 
       - name: Read updatetime.txt after running Deno
         id: read_after_updatetime
