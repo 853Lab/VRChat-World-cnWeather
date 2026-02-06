@@ -53,7 +53,7 @@ jobs:
           path: |
             ~/.cache/deno
             ~/.deno
-          key: ${{ runner.os }}-primes
+          key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Run Deno Cache
         run: deno cache VWWC/create.ts
