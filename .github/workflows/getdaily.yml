@@ -47,6 +47,16 @@ jobs:
         with:
           deno-version: vx.x.x
 
+      - name: Cache Deno dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/deno
+            ~/.deno
+          key: deno-${{ runner.os }}-${{ hashFiles('**/*.ts' '**/import_map.json', '**/deno.json', '**/deno.jsonc') }}
+          restore-keys: |
+            deno-${{ runner.os }}-
+
       - name: Run Deno Cache
         run: deno cache VWWC/create.ts
 
