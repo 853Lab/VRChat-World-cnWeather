@@ -45,7 +45,8 @@ jobs:
       - name: Install Deno
         uses: denoland/setup-deno@v2
         with:
-          deno-version: vx.x.x
+          cache: true
+          deno-version: latest
 
       - name: Cache Deno dependencies
         uses: actions/cache@v5
