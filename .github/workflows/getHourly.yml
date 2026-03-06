@@ -22,7 +22,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted-m4
     steps:
       - name: What was your mission in Shanghai?!
         uses: MathRobin/timezone-action@v1.1
@@ -31,13 +31,13 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v6
-        # with:
-        #   clean: false
+        with:
+          clean: false
 
       - name: Checkout VRChat-World-Weather-Creator repository
         uses: actions/checkout@v6
         with:
-          # clean: false
+          clean: false
           repository: Sonic853/VRChat-World-Weather-Creator
           path: VWWC
 
