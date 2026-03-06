@@ -30,10 +30,10 @@ jobs:
           timezoneLinux: 'Asia/Shanghai'
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout VRChat-World-Weather-Creator repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Sonic853/VRChat-World-Weather-Creator
           path: VWWC
@@ -85,7 +85,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Deploy to Server
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.5
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           username: '${{ secrets.SERVER_USER }}'
           server: '${{ secrets.SERVER_IP }}'
