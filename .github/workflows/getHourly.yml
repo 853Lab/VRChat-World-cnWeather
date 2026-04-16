@@ -57,6 +57,7 @@ jobs:
           path: |
             ~/.cache/deno
             ~/.deno
+            ./pages
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Run Deno Cache
