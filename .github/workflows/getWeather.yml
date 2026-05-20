@@ -74,10 +74,10 @@ jobs:
         run: deno cache VWWC/create.ts
 
       - name: Run Deno script (Daily)
-        if: github.event.schedule == '1 12,0 * * *' || github.event_name == 'workflow_dispatch' && inputs.run_daily == 'true'
+        if: ${{ github.event.schedule == '1 12,0 * * *' || github.event_name == 'workflow_dispatch' && inputs.run_daily }}
         run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwdaily,qwnow,qwhourly --export=${{ secrets.EXPORT }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }} --apihost=${{ secrets.APIHOST }}
       - name: Run Deno script (Hourly)
-        if: github.event.schedule == '1 2,4,6,8,10,14,16,18,20,22 * * *' || github.event_name == 'workflow_dispatch' && inputs.run_daily == 'false'
+        if: ${{ github.event.schedule == '1 2,4,6,8,10,14,16,18,20,22 * * *' || github.event_name == 'workflow_dispatch' && !inputs.run_daily }}
         run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwnow,qwhourly --export=${{ secrets.EXPORT }} --saveurl=${{ secrets.SAVEURL }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }} --apihost=${{ secrets.APIHOST }}
 
       - name: Read updatetime.txt after running Deno
