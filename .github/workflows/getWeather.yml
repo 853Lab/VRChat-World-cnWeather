@@ -18,6 +18,11 @@ on:
         required: false
         default: false
         type: boolean
+      run_hourly:
+        description: Get Weather with Hourly.
+        required: false
+        default: true
+        type: boolean
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -38,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: What was your mission in Shanghai?!
-        uses: MathRobin/timezone-action@v1.1
+        uses: Sonic853/timezone-action@main
         with:
           timezoneLinux: 'Asia/Shanghai'
 
@@ -77,7 +82,7 @@ jobs:
         if: ${{ github.event.schedule == '1 12,0 * * *' || github.event_name == 'workflow_dispatch' && inputs.run_daily }}
         run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwdaily,qwnow,qwhourly --export=${{ secrets.EXPORT }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }} --apihost=${{ secrets.APIHOST }}
       - name: Run Deno script (Hourly)
-        if: ${{ github.event.schedule == '1 2,4,6,8,10,14,16,18,20,22 * * *' || github.event_name == 'workflow_dispatch' && !inputs.run_daily }}
+        if: ${{ github.event.schedule == '1 2,4,6,8,10,14,16,18,20,22 * * *' || github.event_name == 'workflow_dispatch' && inputs.run_hourly }}
         run: deno run --allow-read --allow-write --allow-net --allow-env VWWC/create.ts --mode=qwnow,qwhourly --export=${{ secrets.EXPORT }} --saveurl=${{ secrets.SAVEURL }} --accuweather=${{ secrets.ACCUWEATHER }} --qweather=${{ secrets.QWEATHER }} --free=${{ secrets.FREE }} --project=${{ secrets.PROJECT }} --key=${{ secrets.KEY }} --private=${{ secrets.PRIVATEKEY }} --apihost=${{ secrets.APIHOST }}
 
       - name: Read updatetime.txt after running Deno
