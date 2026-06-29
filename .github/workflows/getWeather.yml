@@ -71,7 +71,7 @@ jobs:
             ~/.cache/deno
             ~/.deno
             ./pages
-          key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
+          key: ${{ runner.os }}-deno-${{ hashFiles('**/*.json') }}
 
       - name: Run Deno Cache
         run: deno cache VWWC/create.ts
